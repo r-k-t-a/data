@@ -1,6 +1,6 @@
 {
   "name": "@love/react",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "> TODO: description",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "",
@@ -19,7 +19,7 @@
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
   "dependencies": {
-    "@love/store": "^0.0.5",
+    "@love/store": "^0.0.6",
     "react": "^17.0.1"
   },
   "devDependencies": {
