@@ -1,0 +1,7 @@
+{
+  "lerna": "3.22.1",
+  "packages": ["love-react", "love-store"],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "0.0.1"
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@love/store/*": ["./love-store/src"],
+      "@love/react/*": ["./love-react/src"]
+    }
+  }
+}

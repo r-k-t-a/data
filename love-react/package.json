@@ -1,0 +1,30 @@
+{
+  "name": "@love/react",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "droganov <serge@droganov.ru>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "tsc -p tsconfig.build.json",
+    "start": "tsc -p tsconfig.build.json -w",
+    "test": "react-scripts-ts test --env=jsdom",
+    "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
+  },
+  "dependencies": {
+    "@love/store": "^0.0.1",
+    "react": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.56"
+  }
+}
