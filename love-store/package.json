@@ -18,5 +18,5 @@
     "test": "react-scripts-ts test --env=jsdom",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
-  "gitHead": "ff8a491fc2ceb80e2dc413361aea1516b233bc26"
+  "gitHead": "b91f49fcbcdb14cd18a137268a4d447c6340aa1c"
 }

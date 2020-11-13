@@ -7,5 +7,5 @@
       "@love/react/*": ["./love-react/src"]
     }
   },
-  "references": [{ "path": "love-store/src" }, { "path": "love-react/src" }]
+  "references": [{ "path": "love-store" }, { "path": "love-react" }]
 }

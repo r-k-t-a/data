@@ -5,7 +5,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "CI=true lerna run test --stream",
     "start": "lerna run --parallel start",
-    "prepare": "lerna run build",
+    "prepare": "rimraf love-*/lib && yarn typecheck && lerna run build",
     "build": "npm run prepare && lerna run --parallel build",
     "release": "yarn run build && lerna publish --contents lib --yes patch",
     "typecheck": "lerna run typecheck"
