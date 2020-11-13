@@ -5,7 +5,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "CI=true lerna run test --stream",
     "start": "lerna run --parallel start",
-    "prepare": "rimraf love-*/lib && lerna run prepare",
+    "prepare": "lerna run build",
     "build": "npm run prepare && lerna run --parallel build",
     "release": "yarn run build && lerna publish --contents lib --yes patch",
     "typecheck": "lerna run typecheck"
@@ -18,8 +18,6 @@
   },
   "workspaces": [
     "love-store",
-    "love-react",
-    "dev",
-    "docs"
+    "love-react"
   ]
 }

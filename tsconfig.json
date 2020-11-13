@@ -6,5 +6,6 @@
       "@love/store/*": ["./love-store/src"],
       "@love/react/*": ["./love-react/src"]
     }
-  }
+  },
+  "references": [{ "path": "love-store/src" }, { "path": "love-react/src" }]
 }

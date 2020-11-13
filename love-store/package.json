@@ -10,10 +10,10 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
-    "prepare": "yarn run prepare:corejs && yarn run prepare:esm",
-    "prepare:corejs": "tsc -p tsconfig.build.json",
-    "prepare:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
-    "postprepare": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
+    "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
+    "build": "yarn run build:commonjs && yarn run build:esm",
+    "build:commonjs": "tsc -p tsconfig.build.json",
+    "build:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
     "start": "tsc -p tsconfig.build.json -w",
     "test": "react-scripts-ts test --env=jsdom",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
