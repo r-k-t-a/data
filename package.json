@@ -7,6 +7,7 @@
     "start": "lerna run --parallel start",
     "prepare": "rimraf love-*/lib && lerna run prepare",
     "build": "npm run prepare && lerna run --parallel build",
+    "release": "yarn run build && lerna publish --contents lib --yes patch",
     "typecheck": "lerna run typecheck"
   },
   "devDependencies": {
