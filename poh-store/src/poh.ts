@@ -3,15 +3,15 @@ import { Dispatch } from "./dispatch";
 import { Store } from "./store";
 import { applyMiddleware, Middleware, StateMap } from "./applyMiddleware";
 
-export type LoveFactory = typeof makeLove;
-export type Love = ReturnType<LoveFactory>;
+export type PohFactory = typeof makePoh;
+export type Poh = ReturnType<PohFactory>;
 
 type StoresMap = {
   [extraProps: string]: Store;
 };
 type Observer = (action: AnyAction, ...extraArgs: any[]) => void;
 
-export const makeLove = (
+export const makePoh = (
   initialState?: StateMap,
   ...middleware: Middleware[]
 ) => {
@@ -31,7 +31,7 @@ export const makeLove = (
     );
   }
 
-  const loveDispatch: Dispatch = (action, ...extraArgs) => {
+  const pohDispatch: Dispatch = (action, ...extraArgs) => {
     silent = true;
     Object.values(stores).forEach((store) =>
       store.dispatch(action, ...extraArgs)
@@ -42,7 +42,7 @@ export const makeLove = (
   };
 
   const dispatch = applyMiddleware(
-    { getState, dispatch: loveDispatch },
+    { getState, dispatch: pohDispatch },
     ...middleware
   );
 

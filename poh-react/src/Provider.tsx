@@ -1,10 +1,10 @@
 import React, { FC, createContext } from "react";
-import { Love } from "@love/store/*";
+import { Poh } from "@poh/store";
 
-export const Context = createContext<Love>({} as Love);
+export const Context = createContext<Poh>({} as Poh);
 
 type Props = {
-  of: Love;
+  of: Poh;
 };
 
 export const Provider: FC<Props> = ({ children, of }) => {

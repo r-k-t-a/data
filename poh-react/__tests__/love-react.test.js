@@ -1,6 +1,6 @@
 "use strict";
 
-const loveReact = require("..");
+const pohReact = require("..");
 
 describe("poh-react", () => {
   it("needs tests");

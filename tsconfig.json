@@ -3,8 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@love/store/*": ["./poh-store/src"],
-      "@love/react/*": ["./poh-react/src"]
+      "@poh/store/*": ["./poh-store/src"],
+      "@poh/react/*": ["./poh-react/src"]
     }
   },
   "references": [{ "path": "poh-store" }, { "path": "poh-react" }]

@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 
-import { Store } from "@love/store/*";
+import { Store } from "@poh/store";
 import { Context } from "./Provider";
 
 export const useStore = <S extends Store>(store: S) => {

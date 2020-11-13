@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-const loveReact = require('poh-react');
+const pohReact = require('poh-react');
 
 // TODO: DEMONSTRATE API
 ```

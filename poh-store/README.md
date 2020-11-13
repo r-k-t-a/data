@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-const loveStore = require('poh-store');
+const pohStore = require('poh-store');
 
 // TODO: DEMONSTRATE API
 ```

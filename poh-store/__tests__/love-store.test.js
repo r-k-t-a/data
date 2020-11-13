@@ -1,6 +1,6 @@
 "use strict";
 
-const loveStore = require("..");
+const pohStore = require("..");
 
 describe("poh-store", () => {
   it("needs tests");
