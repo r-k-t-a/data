@@ -4,3 +4,4 @@ export interface Action<A = string> {
 export interface AnyAction extends Action {
     [extraProps: string]: any;
 }
+//# sourceMappingURL=action.d.ts.map

@@ -8,13 +8,15 @@
   "module": "esm/index.js",
   "typings": "lib/index.d.ts",
   "license": "MIT",
+  "sideEffects": false,
   "scripts": {
     "prepare": "yarn run prepare:corejs && yarn run prepare:esm",
     "prepare:corejs": "tsc -p tsconfig.build.json",
     "prepare:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
+    "postprepare": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
     "start": "tsc -p tsconfig.build.json -w",
     "test": "react-scripts-ts test --env=jsdom",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
-  "gitHead": "6168f2679941ed571ccc9f29912b9808969950aa"
+  "gitHead": "ff8a491fc2ceb80e2dc413361aea1516b233bc26"
 }

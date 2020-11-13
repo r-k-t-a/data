@@ -10,3 +10,4 @@ export declare type MiddlwareAPI = {
 };
 export declare type Middleware = (middlewareAPI: MiddlwareAPI) => (next: Dispatch) => (action: AnyAction) => AnyAction;
 export declare function applyMiddleware(middlewareAPI: MiddlwareAPI, ...middlewares: Middleware[]): Dispatch<AnyAction>;
+//# sourceMappingURL=applyMiddleware.d.ts.map

@@ -1,6 +1,8 @@
-node_modules
-lib
-build
-*.log
-coverage
 .DS_Store
+*.log
+
+build
+coverage
+lib
+node_modules
+tsconfig.build.tsbuildinfo

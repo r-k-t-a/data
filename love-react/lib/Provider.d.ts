@@ -34,3 +34,4 @@ declare type Props = {
 };
 export declare const Provider: FC<Props>;
 export {};
+//# sourceMappingURL=Provider.d.ts.map

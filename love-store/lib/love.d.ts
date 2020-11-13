@@ -16,3 +16,4 @@ export declare const makeLove: (initialState?: StateMap | undefined, ...middlewa
     replaceStores(nextStores: StoresMap): void;
 };
 export {};
+//# sourceMappingURL=love.d.ts.map

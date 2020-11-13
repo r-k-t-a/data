@@ -10,3 +10,4 @@ export declare const makeStore: <S>(name: string, defaultState: S) => {
     observe(observer: (state: S, action: AnyAction, ...extraArgs: any[]) => void): () => void;
     on<A extends AnyAction>(type: A["type"] | A["type"][], actionHandler: (action: A) => S): (action?: Pick<A, Exclude<keyof A, "type">> | undefined, ...extraArgs: any[]) => () => AnyAction;
 };
+//# sourceMappingURL=store.d.ts.map
