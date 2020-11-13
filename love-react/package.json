@@ -6,16 +6,12 @@
   "homepage": "",
   "license": "ISC",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "typings": "lib/index.d.ts",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
   "scripts": {
-    "prepare": "tsc -p tsconfig.build.json",
+    "prepare": "yarn run prepare:corejs && yarn run prepare:esm",
+    "prepare:corejs": "tsc -p tsconfig.build.json",
+    "prepare:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
     "start": "tsc -p tsconfig.build.json -w",
     "test": "react-scripts-ts test --env=jsdom",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
@@ -26,5 +22,6 @@
   },
   "devDependencies": {
     "@types/react": "^16.9.56"
-  }
+  },
+  "gitHead": "6168f2679941ed571ccc9f29912b9808969950aa"
 }
