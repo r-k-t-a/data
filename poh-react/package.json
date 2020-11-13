@@ -1,6 +1,6 @@
 {
   "name": "@poh/react",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "> TODO: description",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "",
@@ -19,7 +19,7 @@
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
   "dependencies": {
-    "@poh/store": "^0.0.6",
+    "@poh/store": "^0.0.7",
     "react": "^17.0.1"
   },
   "devDependencies": {
