@@ -24,6 +24,7 @@ export const makeModel = <M>(name: string, defaultState: M) => {
     const callback = events[action.type];
     if (callback) {
       state = callback(action, ...extraArgs);
+      console.log("state: ", state);
       observers.forEach((observer) => observer(action, ...extraArgs));
     }
     return action;
@@ -57,13 +58,15 @@ export const makeModel = <M>(name: string, defaultState: M) => {
     ) {
       const types = Array.isArray(type) ? type : [type];
       types.forEach((e) => {
+        if (e in events)
+          throw new Error(`Event ${e} already exists in model #{name}`);
         events[e] = callback;
-        Object.freeze(events[e]);
       });
       // TODO: should be required if A has other keys than 'type'
       // https://stackoverflow.com/questions/52318011/optional-parameters-based-on-conditional-types
-      return (action?: Omit<A, "type">, ...extraArgs: any[]) => () =>
+      return (action?: Omit<A, "type">, ...extraArgs: any[]) => () => {
         dispatch({ type: types[0], ...action }, ...extraArgs);
+      };
     },
   };
 };

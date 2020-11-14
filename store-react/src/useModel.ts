@@ -7,6 +7,6 @@ export const useModel = <M extends Model>(model: M) => {
   const { registerStore } = useContext(Context);
   registerStore(model);
   const [state, setState] = useState<M["state"]>(model.state);
-  useEffect(() => model.observe(setState), [model]);
+  useEffect(() => model.observe(() => setState(model.state)), [model]);
   return state;
 };

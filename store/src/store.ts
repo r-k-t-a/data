@@ -31,7 +31,7 @@ export const makeStore = (
     );
   }
 
-  const pohDispatch: Dispatch = (action, ...extraArgs) => {
+  const globalDispatch: Dispatch = (action, ...extraArgs) => {
     silent = true;
     Object.values(stores).forEach((store) =>
       store.dispatch(action, ...extraArgs)
@@ -42,7 +42,7 @@ export const makeStore = (
   };
 
   const dispatch = applyMiddleware(
-    { getState, dispatch: pohDispatch },
+    { getState, dispatch: globalDispatch },
     ...middleware
   );
 
@@ -66,7 +66,7 @@ export const makeStore = (
           { getState, dispatch: store.dispatch },
           ...middleware
         );
-        store.observe((state, action, ...extraArgs) =>
+        store.observe((action, ...extraArgs) =>
           notifyObservers(action, ...extraArgs)
         );
         const savedState = initialState?.[store.name];
