@@ -1,14 +1,21 @@
 {
   "name": "@rkta/store",
   "version": "0.0.7",
-  "description": "> TODO: description",
+  "description": "Minimalistic javascript data store",
   "author": "droganov <serge@droganov.ru>",
-  "homepage": "",
+  "homepage": "https://github.com/r-k-t-a/data",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "typings": "lib/index.d.ts",
   "license": "MIT",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:r-k-t-a/data.git"
+  },
+  "bugs": {
+    "url": "https://github.com/r-k-t-a/data/issues"
+  },
   "scripts": {
     "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
     "build": "yarn run build:commonjs && yarn run build:esm",
