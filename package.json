@@ -2,10 +2,11 @@
   "private": true,
   "scripts": {
     "clean": "lerna clean",
+    "clean:lib": "rimraf store/lib && rimraf store-react/lib $$ rimraf **/tsconfig.build.tsbuildinfo",
     "bootstrap": "lerna bootstrap",
     "test": "CI=true lerna run test --stream",
     "start": "lerna run --parallel start",
-    "prepare": "rimraf poh-*/lib && yarn typecheck && lerna run build",
+    "prepare": "yarn run clean:lib && yarn typecheck && lerna run build",
     "build": "npm run prepare && lerna run --parallel build",
     "release": "yarn run build && lerna publish --contents lib --yes patch",
     "typecheck": "lerna run typecheck"
@@ -17,7 +18,8 @@
     "typescript": "^4.0.3"
   },
   "workspaces": [
-    "poh-store",
-    "poh-react"
+    "exlab",
+    "store",
+    "store-react"
   ]
 }

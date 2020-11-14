@@ -2,6 +2,6 @@
 
 const pohReact = require("..");
 
-describe("poh-react", () => {
+describe("store-react", () => {
   it("needs tests");
 });

@@ -1,9 +1,6 @@
 {
   "lerna": "3.22.1",
-  "packages": [
-    "poh-react",
-    "poh-store"
-  ],
+  "packages": ["exlab", "store", "store-react"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "0.0.7"

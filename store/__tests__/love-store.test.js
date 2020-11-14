@@ -2,6 +2,6 @@
 
 const pohStore = require("..");
 
-describe("poh-store", () => {
+describe("store", () => {
   it("needs tests");
 });

@@ -1,11 +1,11 @@
-# `poh-store`
+# `store-react`
 
 > TODO: description
 
 ## Usage
 
 ```
-const pohStore = require('poh-store');
+const pohReact = require('store-react');
 
 // TODO: DEMONSTRATE API
 ```

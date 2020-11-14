@@ -1,10 +1,10 @@
 import { AnyAction } from "./action";
 import compose from "./compose";
 import { Dispatch } from "./dispatch";
-import { Store } from "./store";
+import { Model } from "./model";
 
 export type StateMap = {
-  [extraProps: string]: Store["state"];
+  [extraProps: string]: Model["state"];
 };
 
 export type MiddlwareAPI = {

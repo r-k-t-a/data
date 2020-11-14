@@ -1,13 +1,13 @@
 {
-  "name": "@poh/store",
+  "name": "@rkta/store-react",
   "version": "0.0.7",
   "description": "> TODO: description",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "",
+  "license": "ISC",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "typings": "lib/index.d.ts",
-  "license": "MIT",
   "sideEffects": false,
   "scripts": {
     "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
@@ -18,8 +18,15 @@
     "test": "react-scripts-ts test --env=jsdom",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
+  "dependencies": {
+    "@rkta/store": "^0.0.7",
+    "react": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.56"
+  },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "ba69aaa813ba22636dcbe9959d94f18c270fc49f"
+  "gitHead": "e571e772af04519d5389b221254b9b8cd5263f5f"
 }

@@ -1,17 +1,17 @@
 import { AnyAction } from "./action";
 import { Dispatch } from "./dispatch";
-import { Store } from "./store";
+import { Model } from "./model";
 import { applyMiddleware, Middleware, StateMap } from "./applyMiddleware";
 
-export type PohFactory = typeof makePoh;
-export type Poh = ReturnType<PohFactory>;
+export type StoreFactory = typeof makeStore;
+export type Store = ReturnType<StoreFactory>;
 
 type StoresMap = {
-  [extraProps: string]: Store;
+  [extraProps: string]: Model;
 };
 type Observer = (action: AnyAction, ...extraArgs: any[]) => void;
 
-export const makePoh = (
+export const makeStore = (
   initialState?: StateMap,
   ...middleware: Middleware[]
 ) => {
@@ -59,7 +59,7 @@ export const makePoh = (
         );
       };
     },
-    registerStore(store: Store) {
+    registerStore(store: Model) {
       if (!(store.name in stores)) {
         stores[store.name] = store;
         store.dispatch = applyMiddleware(

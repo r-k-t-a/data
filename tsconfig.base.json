@@ -16,6 +16,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noLib": false,
+    "target": "es5",
 
     "noFallthroughCasesInSwitch": true,
     "noImplicitThis": true,
