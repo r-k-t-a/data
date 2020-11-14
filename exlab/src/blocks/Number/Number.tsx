@@ -1,5 +1,12 @@
 import React from "react";
-import { decrement, increment, pow2, reset, useNumber } from "./numberModel";
+import {
+  decrement,
+  increment,
+  pow2,
+  reset,
+  useNumber,
+  add,
+} from "./numberModel";
 
 export const Number = (): JSX.Element => {
   const number = useNumber();
@@ -10,6 +17,7 @@ export const Number = (): JSX.Element => {
       <button onClick={increment()}>Increment</button>
       <button onClick={pow2()}>Square</button>
       <button onClick={reset()}>Reset</button>
+      <button onClick={add({ value: 10 })}>Add 10</button>
     </div>
   );
 };
