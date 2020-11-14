@@ -9,9 +9,9 @@ type Events = {
 };
 type Observer = (action: AnyAction, ...extraArgs: any[]) => void;
 
-export const makeModel = <M>(name: string, defaultState: M) => {
+export const makeModel = <S>(name: string, defaultState: S) => {
   let observers: Observer[] = [];
-  let state: M = defaultState;
+  let state: S = defaultState;
 
   let events: Events = {
     "@init": ({ savedState }: AnyAction) => {
@@ -43,7 +43,7 @@ export const makeModel = <M>(name: string, defaultState: M) => {
     get state() {
       return Object.freeze(state);
     },
-    set state(nextState: M) {
+    set state(nextState: S) {
       state = nextState;
     },
     observe(observer: Observer) {
@@ -54,7 +54,7 @@ export const makeModel = <M>(name: string, defaultState: M) => {
     },
     on<A extends AnyAction | undefined = undefined>(
       type: string | string[],
-      callback: (action: A) => M
+      callback: (action: A) => S
     ) {
       const types = Array.isArray(type) ? type : [type];
       types.forEach((e) => {
