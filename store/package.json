@@ -1,6 +1,6 @@
 {
   "name": "@rkta/store",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Minimalistic javascript data store",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "https://github.com/r-k-t-a/data",
