@@ -1,7 +1,11 @@
 {
   "lerna": "3.22.1",
-  "packages": ["exlab", "store", "store-react"],
+  "packages": [
+    "exlab",
+    "store",
+    "store-react"
+  ],
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "0.0.7"
+  "version": "0.0.8"
 }
