@@ -22,7 +22,7 @@
     "build:commonjs": "tsc -p tsconfig.build.json",
     "build:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
     "start": "tsc -p tsconfig.build.json -w",
-    "test": "react-scripts-ts test --env=jsdom",
+    "test:disabled": "jest",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
   "dependencies": {
