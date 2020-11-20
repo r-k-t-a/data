@@ -22,11 +22,14 @@
     "build:commonjs": "tsc -p tsconfig.build.json",
     "build:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
     "start": "tsc -p tsconfig.build.json -w",
-    "test": "react-scripts-ts test --env=jsdom",
+    "test": "jest",
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e571e772af04519d5389b221254b9b8cd5263f5f"
+  "gitHead": "e571e772af04519d5389b221254b9b8cd5263f5f",
+  "devDependencies": {
+    "ts-jest": "^26.4.4"
+  }
 }
