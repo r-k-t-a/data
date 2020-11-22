@@ -1,4 +1,4 @@
-import { Model, ModelFactory } from "../model";
+import { Model } from "../model";
 import { applyMiddleware, Middleware, StateMap } from "../middleware";
 import { makeMediator } from "../mediator";
 
@@ -10,14 +10,11 @@ export const makeStore = (
   ...middleware: Middleware[]
 ) => {
   let state: Record<string, any>;
-  let models: Record<string, Model>;
+  let models: Record<string, ReturnType<ReturnType<Model>>>;
   const mediator = makeMediator();
 
   function getState(): StateMap {
-    return Object.entries(models).reduce(
-      (acc, [key, model]) => ({ ...acc, [key]: model.state }),
-      {}
-    );
+    return state;
   }
 
   const dispatch = applyMiddleware(
@@ -31,7 +28,7 @@ export const makeStore = (
     ...middleware
   );
 
-  function addModel(modelFactory: ModelFactory) {
+  function addModel(modelFactory: ReturnType<Model>) {
     function getState<S>(): S {
       return Object.freeze(state[modelFactory.id]);
     }
@@ -51,5 +48,5 @@ export const makeStore = (
     return model;
   }
 
-  return { addModel, dispatch };
+  return { addModel, dispatch, getState };
 };

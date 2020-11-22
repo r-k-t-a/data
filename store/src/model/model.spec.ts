@@ -1,5 +1,5 @@
 import { makeMediator } from "../mediator";
-import { makeModelFactory } from "./model";
+import { model } from "./model";
 
 const dispatch = jest.fn();
 
@@ -18,23 +18,23 @@ function makeStore() {
 describe("model", () => {
   it("has default state", () => {
     const store = makeStore();
-    const makeModel = makeModelFactory({ id: "test", defaultState: 0 });
+    const makeModel = model({ id: "test", defaultState: 0 });
     const mediator = makeMediator();
-    const model = makeModel({ ...store, dispatch, mediator });
-    expect(model.state).toBe(0);
+    const number = makeModel({ ...store, dispatch, mediator });
+    expect(number.state).toBe(0);
   });
 
   it("takes external state", () => {
     const store = makeStore();
-    const makeModel = makeModelFactory({ id: "test", defaultState: 0 });
+    const makeModel = model({ id: "test", defaultState: 0 });
     const mediator = makeMediator();
-    const model = makeModel({ ...store, dispatch, mediator, initialState: 1 });
-    expect(model.state).toBe(1);
+    const number = makeModel({ ...store, dispatch, mediator, initialState: 1 });
+    expect(number.state).toBe(1);
   });
 
   describe("actions", () => {
     type Add = { amount: number };
-    const makeModel = makeModelFactory({
+    const makeModel = model({
       id: "test",
       defaultState: 0,
       actions: {
@@ -48,7 +48,7 @@ describe("model", () => {
     });
     const mediator = makeMediator();
     const store = makeStore();
-    const model = makeModel({
+    const number = makeModel({
       ...store,
       dispatch: (action, ...args) => {
         mediator.publish(action.type, action, ...args);
@@ -56,18 +56,19 @@ describe("model", () => {
       },
       mediator,
     });
-    model.add({ amount: 2 });
+    number.add({ amount: 2 });
+    console.log("model: ", model);
     test("add", () => {
       expect(store.getState()).toBe(2);
     });
     test("increment", () => {
-      model.increment();
+      number.increment();
       expect(store.getState()).toBe(3);
     });
   });
 
   describe("events", () => {
-    const makeModel = makeModelFactory({
+    const makeModel = model({
       id: "test",
       defaultState: 0,
       events: { "one, two": (state) => (state += 1) },
@@ -92,7 +93,7 @@ describe("model", () => {
 
   describe("lifecycle", () => {
     const mockFn = jest.fn();
-    const makeModel = makeModelFactory({
+    const makeModel = model({
       id: "test",
       defaultState: 0,
       actions: {
@@ -104,7 +105,7 @@ describe("model", () => {
     });
     const mediator = makeMediator();
     const store = makeStore();
-    const model = makeModel({
+    const number = makeModel({
       ...store,
       dispatch: (action, ...args) => {
         mediator.publish(action.type, action, ...args);
@@ -112,14 +113,14 @@ describe("model", () => {
       },
       mediator,
     });
-    const unsubscribe = model.subscribe(mockFn);
+    const unsubscribe = number.subscribe(mockFn);
 
     test("init", () => {
       expect(store.getState()).toBe(5);
     });
 
     test("subscribe", () => {
-      model.reset();
+      number.reset();
       expect(mockFn).toBeCalledTimes(1);
     });
 
@@ -133,7 +134,7 @@ describe("model", () => {
 
     test("unsubscribe", () => {
       unsubscribe();
-      model.reset();
+      number.reset();
       expect(mockFn).toBeCalledTimes(1);
     });
   });

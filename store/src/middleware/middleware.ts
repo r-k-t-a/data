@@ -3,7 +3,7 @@ import { compose } from "../compose";
 import { Dispatch } from "../dispatch";
 import { Model } from "../model";
 
-export type StateMap = Record<string, Model["state"]>;
+export type StateMap = Record<string, ReturnType<ReturnType<Model>>>;
 
 export type MiddlwareAPI = {
   getState(): StateMap;
