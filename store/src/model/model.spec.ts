@@ -57,7 +57,6 @@ describe("model", () => {
       mediator,
     });
     number.add({ amount: 2 });
-    console.log("model: ", model);
     test("add", () => {
       expect(store.getState()).toBe(2);
     });

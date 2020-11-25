@@ -5,8 +5,9 @@ type Topics = Record<string, Function[]>;
 
 export const makeMediator = () => {
   const topics: Topics = {};
-  type Extends = { publish: typeof publish; subscribe: typeof subscribe };
-  function mount<O extends Object>(obj: O): O & Extends {
+  function mount<O>(
+    obj: O
+  ): O & { publish: typeof publish; subscribe: typeof subscribe } {
     return Object.assign(obj, { publish, subscribe });
   }
   function publish(topic: string, ...args: any[]) {

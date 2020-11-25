@@ -9,7 +9,7 @@ import "./App.css";
 
 const store = makeStore({ number: 10, stack: [-1] });
 
-store.observe(console.log);
+store.subscribe(console.log);
 
 function App() {
   return (

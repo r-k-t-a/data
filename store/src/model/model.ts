@@ -7,28 +7,9 @@ import { Mediator } from "../mediator";
 
 export type Model = typeof model;
 
-type FactoryProps<S> = {
-  dispatch: Dispatch;
-  initialState?: S;
-  getState(): S;
-  mediator: Mediator;
-  setState(nextState: S): void;
-};
+type Callback<S> = (state: S, ...extraArgs: any[]) => S;
 
-type Instance<S, A extends CallbacksMap<S>> = ActionProducers<S, A> & {
-  state: S;
-  subscribe(callback: () => void): () => void;
-};
-
-interface Factory<S, A extends CallbacksMap<S>> {
-  (props: FactoryProps<S>): Instance<S, A>;
-}
-
-interface Callback<S> {
-  (state: S, ...extraArgs: any[]): S;
-}
-
-type CallbacksMap<S> = Record<string, Callback<S>>;
+export type CallbacksMap<S> = Record<string, Callback<S>>;
 
 type ActionProducers<S, A extends CallbacksMap<S>> = {
   [P in keyof A]: (
@@ -38,7 +19,30 @@ type ActionProducers<S, A extends CallbacksMap<S>> = {
   ) => void;
 };
 
-export function model<S, A extends CallbacksMap<S>>({
+export type ModelInstance<S, A extends CallbacksMap<S>> = {
+  state: S;
+  subscribe: (callback: (state: S) => void) => void;
+} & ActionProducers<S, A>;
+
+interface ModelFactory<S, A extends CallbacksMap<S>> {
+  (props: {
+    dispatch: Dispatch;
+    initialState?: S;
+    getState(): S;
+    mediator: Mediator;
+    setState(nextState: S): void;
+  }): ModelInstance<S, A>;
+}
+
+export type EnhacedModelFactory<S, A extends CallbacksMap<S>> = ModelFactory<
+  S,
+  A
+> & {
+  id: string;
+  defaultState: S;
+};
+
+export const model = <S, A extends CallbacksMap<S>>({
   id,
   actions,
   defaultState,
@@ -48,8 +52,8 @@ export function model<S, A extends CallbacksMap<S>>({
   defaultState: S;
   actions?: A;
   events?: CallbacksMap<S>;
-}) {
-  const factory: Factory<S, A> = ({
+}): EnhacedModelFactory<S, A> => {
+  const factory: ModelFactory<S, A> = ({
     dispatch,
     initialState,
     getState,
@@ -94,16 +98,14 @@ export function model<S, A extends CallbacksMap<S>>({
       get state() {
         return getState();
       },
-      subscribe(callback: () => void) {
-        return mediator.subscribe(updateType, callback);
+      subscribe(callback: (state: S) => void) {
+        return mediator.subscribe(updateType, () => callback(getState()));
       },
     };
   };
 
-  const extras = {
+  return Object.assign(factory, {
     id,
     defaultState,
-  };
-
-  return Object.assign(factory, extras);
-}
+  });
+};
