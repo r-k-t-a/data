@@ -10,14 +10,14 @@ type ActionProducers<S, A extends ModelCallbacksMap<S>> = {
   ) => void;
 };
 
-type ProxiedModel<S, A extends ModelCallbacksMap<S>> = {
+export type ProxiedModel<S, A extends ModelCallbacksMap<S>> = {
   getState(): S;
   subscribe(callback: (state: S) => void): () => void;
 } & ActionProducers<S, A>;
 
 export const proxy = <S, A extends ModelCallbacksMap<S>>(
   store: Store,
-  { actions, defaultState, events, name }: Model<S, A>
+  { actions = {} as A, defaultState, events = {}, name }: Model<S, A>
 ): ProxiedModel<S, A> => {
   const getState = (): S => store.getState()[name];
   const setState = (nextState: S): void => {

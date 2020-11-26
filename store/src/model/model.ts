@@ -3,13 +3,6 @@ export type ModelCallback<S> = (state: S, ...extraArgs: any[]) => S;
 export type ModelCallbacksMap<S> = Record<string, ModelCallback<S>>;
 
 export type Model<S, A extends ModelCallbacksMap<S>> = {
-  actions: A;
-  events: ModelCallbacksMap<S>;
-  name: string;
-  defaultState: S;
-};
-
-type ModelProps<S, A extends ModelCallbacksMap<S>> = {
   actions?: A;
   events?: ModelCallbacksMap<S>;
   name: string;
@@ -17,17 +10,9 @@ type ModelProps<S, A extends ModelCallbacksMap<S>> = {
 };
 
 type ModelFactory = <S extends any, A extends ModelCallbacksMap<S>>(
-  props: ModelProps<S, A>
+  props: Model<S, A>
 ) => Readonly<Model<S, A>>;
 
-export const makeModel: ModelFactory = <S, A extends ModelCallbacksMap<S>>({
-  actions = {} as A,
-  events = {},
-  name,
-  defaultState,
-}: ModelProps<S, A>): Model<S, A> => ({
-  actions,
-  events,
-  name,
-  defaultState,
-});
+export const makeModel: ModelFactory = <S, A extends ModelCallbacksMap<S>>(
+  model: Model<S, A>
+): Model<S, A> => model;
