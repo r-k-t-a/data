@@ -1,26 +1,27 @@
+import { Dispatch } from "../dispatch";
 import { applyMiddleware, Middleware } from "../middleware";
-import { makeMediator } from "../mediator";
-import { CallbacksMap, ModelInstance, EnhacedModelFactory } from "../model";
+import { makeMediator, Mediator } from "../mediator";
 
-export type StateMap = Record<string, any>;
+type AnyState = Record<string, any>;
 
-export type StoreFactory = typeof makeStore;
-export type Store = ReturnType<StoreFactory>;
+export type Store = Readonly<{
+  dispatch: Dispatch;
+  getState(): AnyState;
+  mediator: Mediator;
+  replaceState(state: AnyState): void;
+  subscribe(callback: () => void): () => void;
+}>;
 
-export const makeStore = (
-  initialState?: StateMap,
+type StoreFactory = (
+  savedState?: AnyState,
   ...middleware: Middleware[]
-) => {
-  let state: Record<string, any>;
-  let models: Record<string, ModelInstance<any, any>>;
+) => Store;
+
+export const makeStore: StoreFactory = (savedState, ...middleware) => {
+  let state = savedState || {};
 
   const change = "store/@change";
   const mediator = makeMediator();
-
-  function getState(): StateMap {
-    return state;
-  }
-
   const dispatch = applyMiddleware(
     {
       getState,
@@ -33,30 +34,23 @@ export const makeStore = (
     ...middleware
   );
 
-  function addModel<S, A extends CallbacksMap<S>>(
-    modelFactory: EnhacedModelFactory<S, A>
-  ): ModelInstance<S, A> {
-    if (modelFactory.id in models) return models[modelFactory.id];
-    function getState(): Readonly<S> {
-      return Object.freeze(state[modelFactory.id]);
-    }
-    function setState(nextState: S): void {
-      state[modelFactory.id] = nextState;
-    }
-    const model = modelFactory({
-      initialState: initialState?.[modelFactory.id],
-      getState,
-      setState,
-      dispatch,
-      mediator,
-    });
-    models[modelFactory.id] = model;
-    return model;
+  function getState(): AnyState {
+    return state;
   }
 
-  function subscribe(callback: Function) {
-    return mediator.subscribe(change, callback);
+  function replaceState(nextState: AnyState) {
+    state = nextState;
   }
 
-  return { addModel, dispatch, getState, subscribe };
+  const store: Store = {
+    dispatch,
+    getState,
+    mediator,
+    replaceState,
+    subscribe(callback: () => void) {
+      return mediator.subscribe(change, callback);
+    },
+  };
+
+  return store;
 };

@@ -1,14 +1,43 @@
-import { model } from "../model";
+import { makeModel } from "../model";
+import { proxy } from "../proxy";
 import { makeStore } from "./store";
 
+const numberModel = makeModel({
+  name: "number",
+  defaultState: 0,
+  events: { increment: (state) => ++state },
+});
+
 describe("store", () => {
-  it("has default state", () => {
+  test("getState", () => {
+    const store = makeStore({ test: 0 });
+    expect(store.getState()).toStrictEqual({ test: 0 });
+  });
+  test("replaceState", () => {
+    const store = makeStore({ test: 0 });
+    store.replaceState({ jest: 1 });
+    expect(store.getState()).toStrictEqual({ jest: 1 });
+  });
+  test("dispatch", () => {
+    const store = makeStore({ number: 0 });
+    proxy(store, numberModel);
+    store.dispatch({ type: "increment" });
+    expect(store.getState()).toStrictEqual({ number: 1 });
+  });
+  test("subscribe", () => {
+    const spy = jest.fn();
     const store = makeStore();
-    const makeModel = model({ id: "test", defaultState: 0 });
-    const numberModel = store.addModel<typeof makeModel.defaultState, {}>(
-      makeModel
-    );
-    console.log("numberModel: ", numberModel);
-    expect(0).toBe(0);
+    store.subscribe(spy);
+    store.dispatch({ type: "any" });
+    expect(spy).toBeCalled();
+  });
+  test("unsubscribe", () => {
+    const spy = jest.fn();
+    const store = makeStore();
+    const unsubscribe = store.subscribe(spy);
+    store.dispatch({ type: "one" });
+    unsubscribe();
+    store.dispatch({ type: "two" });
+    expect(spy).toBeCalledTimes(1);
   });
 });

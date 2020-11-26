@@ -3,31 +3,30 @@ import { Dispatch } from "./dispatch";
 import { makeMediator, Mediator } from "./mediator";
 import { applyMiddleware, Middleware } from "./middleware";
 
-// #region Callbacks
-export type Callback<S> = (state: S, ...extraArgs: any[]) => S;
-export type CallbacksMap<S> = Record<string, Callback<S>>;
-// #endregion
-
 // #region Model
-type Model<S, A extends CallbacksMap<S>> = {
+export type ModelCallback<S> = (state: S, ...extraArgs: any[]) => S;
+
+export type ModelCallbacksMap<S> = Record<string, ModelCallback<S>>;
+
+type Model<S, A extends ModelCallbacksMap<S>> = {
   actions: A;
-  events: CallbacksMap<S>;
+  events: ModelCallbacksMap<S>;
   name: string;
   defaultState: S;
 };
 
-type ModelProps<S, A extends CallbacksMap<S>> = {
+type ModelProps<S, A extends ModelCallbacksMap<S>> = {
   actions?: A;
-  events?: CallbacksMap<S>;
+  events?: ModelCallbacksMap<S>;
   name: string;
   defaultState: S;
 };
 
-type ModelFactory = <S extends any, A extends CallbacksMap<S>>(
+type ModelFactory = <S extends any, A extends ModelCallbacksMap<S>>(
   props: ModelProps<S, A>
 ) => Readonly<Model<S, A>>;
 
-const model: ModelFactory = <S, A extends CallbacksMap<S>>({
+const model: ModelFactory = <S, A extends ModelCallbacksMap<S>>({
   actions = {} as A,
   events = {},
   name,
@@ -41,22 +40,24 @@ const model: ModelFactory = <S, A extends CallbacksMap<S>>({
 // #endregion
 
 // #region Store
-type Store<S> = {
+type AnyStore = Record<string, any>;
+
+type Store = {
   dispatch: Dispatch;
-  getState(): S;
+  getState(): AnyStore;
   mediator: Mediator;
-  replaceState(state: S): void;
+  replaceState(state: AnyStore): void;
   subscribe(callback: () => void): void;
 };
-type StoreFactory = <S extends Record<string, any>>(
-  savedState: S,
+type StoreFactory = (
+  savedState: AnyStore,
   ...middleware: Middleware[]
-) => Store<S>;
+) => Store;
 
-const makeStore: StoreFactory = <S>(
-  savedState: S,
+const makeStore: StoreFactory = (
+  savedState: AnyStore,
   ...middleware: Middleware[]
-): Store<S> => {
+): Store => {
   let state = savedState;
 
   const change = "store/@change";
@@ -72,10 +73,10 @@ const makeStore: StoreFactory = <S>(
     },
     ...middleware
   );
-  function getState(): S {
+  function getState(): AnyStore {
     return state;
   }
-  function replaceState<N extends S>(nextState: N) {
+  function replaceState(nextState: AnyStore) {
     state = nextState;
   }
   return {
@@ -91,7 +92,7 @@ const makeStore: StoreFactory = <S>(
 // #endregion
 
 // #region Bridge
-type ActionProducers<S, A extends CallbacksMap<S>> = {
+type ActionProducers<S, A extends ModelCallbacksMap<S>> = {
   [P in keyof A]: (
     ...args: Parameters<A[P]>[1] extends undefined
       ? []
@@ -99,13 +100,13 @@ type ActionProducers<S, A extends CallbacksMap<S>> = {
   ) => void;
 };
 
-type ProxiedModel<S, A extends CallbacksMap<S>> = {
+type ProxiedModel<S, A extends ModelCallbacksMap<S>> = {
   state: S;
   subscribe(callback: (state: S) => void): () => void;
 } & ActionProducers<S, A>;
 
-const proxy = <G, S, A extends CallbacksMap<S>>(
-  store: Store<G>,
+const proxy = <S, A extends ModelCallbacksMap<S>>(
+  store: Store,
   { actions, defaultState, events, name }: Model<S, A>
 ): ProxiedModel<S, A> => {
   const getState = (): S => store.getState()[name];
@@ -119,7 +120,7 @@ const proxy = <G, S, A extends CallbacksMap<S>>(
   const initType = getLocalType("@init");
   const updateType = getLocalType("@update");
 
-  function runCallback(callback: Callback<S>, ...args: any[]) {
+  function runCallback(callback: ModelCallback<S>, ...args: any[]) {
     const nextState = callback(getState(), ...args);
     setState(nextState);
     store.mediator.publish(updateType);
