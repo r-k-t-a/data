@@ -1,12 +1,9 @@
 import { AnyAction } from "../action";
 import { compose } from "../compose";
 import { Dispatch } from "../dispatch";
-import { Model } from "../model";
-
-export type StateMap = Record<string, Model["state"]>;
 
 export type MiddlwareAPI = {
-  getState(): StateMap;
+  getState(): Record<string, any>;
   dispatch: Dispatch;
 };
 

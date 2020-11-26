@@ -1,55 +1,57 @@
-import { Model, ModelFactory } from "../model";
-import { applyMiddleware, Middleware, StateMap } from "../middleware";
-import { makeMediator } from "../mediator";
+import { Dispatch } from "../dispatch";
+import { applyMiddleware, Middleware } from "../middleware";
+import { makeMediator, Mediator } from "../mediator";
 
-export type StoreFactory = typeof makeStore;
-export type Store = ReturnType<StoreFactory>;
+export type StoreState = Record<string, any>;
 
-export const makeStore = (
-  initialState?: StateMap,
+export type Store = Readonly<{
+  dispatch: Dispatch;
+  getState(): Readonly<StoreState>;
+  mediator: Mediator;
+  replaceState(state: StoreState): void;
+  subscribe(callback: () => void): () => void;
+}>;
+
+type StoreFactory = (
+  savedState?: StoreState,
   ...middleware: Middleware[]
-) => {
-  let state: Record<string, any>;
-  let models: Record<string, Model>;
+) => Store;
+
+export const makeStore: StoreFactory = (savedState, ...middleware) => {
+  let state = savedState || {};
+
+  const change = "store/@change";
   const mediator = makeMediator();
 
-  function getState(): StateMap {
-    return Object.entries(models).reduce(
-      (acc, [key, model]) => ({ ...acc, [key]: model.state }),
-      {}
-    );
+  function getState(): Readonly<StoreState> {
+    return Object.freeze(state);
+  }
+
+  function replaceState(nextState: StoreState) {
+    state = nextState;
   }
 
   const dispatch = applyMiddleware(
     {
       getState,
       dispatch(action, ...extraArgs) {
-        mediator.publish(action.type, action, ...extraArgs);
+        mediator.publish(action.type, getState(), action, ...extraArgs);
+        mediator.publish(change, action, ...extraArgs);
         return action;
       },
     },
     ...middleware
   );
 
-  function addModel(modelFactory: ModelFactory) {
-    function getState<S>(): S {
-      return Object.freeze(state[modelFactory.id]);
-    }
-    function setState<S>(nextState: S) {
-      state[modelFactory.id] = nextState;
-    }
-    const model = mediator.mount(
-      modelFactory({
-        initialState: initialState?.[modelFactory.id],
-        getState,
-        setState,
-        dispatch,
-        mediator,
-      })
-    );
-    models[modelFactory.id] = model;
-    return model;
-  }
+  const store: Store = {
+    dispatch,
+    getState,
+    mediator,
+    replaceState,
+    subscribe(callback: () => void) {
+      return mediator.subscribe(change, callback);
+    },
+  };
 
-  return { addModel, dispatch };
+  return store;
 };

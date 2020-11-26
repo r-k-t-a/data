@@ -1,15 +1,15 @@
-import { makeModel } from "@rkta/store";
-import { useModel } from "@rkta/store-react";
+import { makeModelHook } from "@rkta/store-react";
 
-const defaultState: number[] = [];
+const defaultState: number[] = [0];
 
-export const stack = makeModel("stack", defaultState);
-
-export const push = stack.on("push", () => [
-  (stack.state[0] || 0) + 1,
-  ...stack.state,
-]);
-export const pop = stack.on("pop", () => stack.state.slice(1));
-export const reset = stack.on("reset", () => defaultState);
-
-export const useStack = () => useModel(stack).join(", ");
+export const useStack = makeModelHook({
+  name: "stack",
+  defaultState,
+  actions: {
+    pop: (state) => state.slice(1),
+    push: (state) => [(state[0] || 0) + 1, ...state],
+  },
+  events: {
+    reset: () => defaultState,
+  },
+});

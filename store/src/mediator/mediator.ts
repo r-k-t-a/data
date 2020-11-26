@@ -5,8 +5,9 @@ type Topics = Record<string, Function[]>;
 
 export const makeMediator = () => {
   const topics: Topics = {};
-  type Extends = { publish: typeof publish; subscribe: typeof subscribe };
-  function mount<O extends Object>(obj: O): O & Extends {
+  function mount<O>(
+    obj: O
+  ): O & { publish: typeof publish; subscribe: typeof subscribe } {
     return Object.assign(obj, { publish, subscribe });
   }
   function publish(topic: string, ...args: any[]) {
@@ -15,6 +16,7 @@ export const makeMediator = () => {
   }
   function subscribe(topic: string, callback: Function) {
     if (!topics[topic]) topics[topic] = [];
+    if (topics[topic].includes(callback)) throw new Error("Err");
     topics[topic].push(callback);
     return () => {
       topics[topic] = topics[topic].filter((cb) => cb !== callback);
