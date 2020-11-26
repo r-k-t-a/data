@@ -2,18 +2,18 @@ import { Dispatch } from "../dispatch";
 import { applyMiddleware, Middleware } from "../middleware";
 import { makeMediator, Mediator } from "../mediator";
 
-type AnyState = Record<string, any>;
+export type StoreState = Record<string, any>;
 
 export type Store = Readonly<{
   dispatch: Dispatch;
-  getState(): AnyState;
+  getState(): Readonly<StoreState>;
   mediator: Mediator;
-  replaceState(state: AnyState): void;
+  replaceState(state: StoreState): void;
   subscribe(callback: () => void): () => void;
 }>;
 
 type StoreFactory = (
-  savedState?: AnyState,
+  savedState?: StoreState,
   ...middleware: Middleware[]
 ) => Store;
 
@@ -22,25 +22,26 @@ export const makeStore: StoreFactory = (savedState, ...middleware) => {
 
   const change = "store/@change";
   const mediator = makeMediator();
+
+  function getState(): Readonly<StoreState> {
+    return Object.freeze(state);
+  }
+
+  function replaceState(nextState: StoreState) {
+    state = nextState;
+  }
+
   const dispatch = applyMiddleware(
     {
       getState,
       dispatch(action, ...extraArgs) {
-        mediator.publish(action.type, action, ...extraArgs);
+        mediator.publish(action.type, getState(), action, ...extraArgs);
         mediator.publish(change, action, ...extraArgs);
         return action;
       },
     },
     ...middleware
   );
-
-  function getState(): AnyState {
-    return state;
-  }
-
-  function replaceState(nextState: AnyState) {
-    state = nextState;
-  }
 
   const store: Store = {
     dispatch,

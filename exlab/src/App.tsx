@@ -7,7 +7,7 @@ import { Stack } from "./blocks/Stack";
 
 import "./App.css";
 
-const store = makeStore({ number: 10, stack: [-1] });
+const store = makeStore();
 
 store.subscribe(console.log);
 
@@ -18,6 +18,8 @@ function App() {
         <Number />
         <hr />
         <Stack />
+        <hr />
+        <button onClick={() => store.dispatch({ type: "reset" })}>Reset</button>
       </div>
     </Provider>
   );

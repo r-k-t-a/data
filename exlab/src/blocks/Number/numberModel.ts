@@ -14,6 +14,8 @@ export const useNumber = makeModelHook({
     increment: (state) => ++state,
     decrement: (state) => --state,
     square: (state) => state ** 2,
+  },
+  events: {
     reset: () => defaultState,
   },
 });

@@ -1,4 +1,4 @@
-import { useMemo, useContext } from "react";
+import { useMemo, useState, useEffect, useContext } from "react";
 import { Model, ModelCallbacksMap, proxy, ProxiedModel } from "@rkta/store";
 
 import { Context } from "./Provider";
@@ -11,12 +11,20 @@ type UseModel<S, A extends ModelCallbacksMap<S>> = { state: S } & Omit<
 export const useModel = <S, A extends ModelCallbacksMap<S>>(
   model: Model<S, A>
 ) => {
+  const [, setState] = useState(0);
   const store = useContext(Context);
 
-  const { getState, ...rest }: ProxiedModel<S, A> = useMemo(
-    () => proxy<S, A>(store, model),
+  const proxiedModel = useMemo(() => proxy(store, model), [model.name]);
+
+  useEffect(
+    () =>
+      proxiedModel.subscribe(() => {
+        setState((prevState) => ++prevState);
+      }),
     [model.name]
   );
+
+  const { getState, ...rest } = proxiedModel;
 
   return { state: getState(), ...rest } as UseModel<S, A>;
 };

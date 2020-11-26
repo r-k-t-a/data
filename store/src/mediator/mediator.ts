@@ -16,6 +16,7 @@ export const makeMediator = () => {
   }
   function subscribe(topic: string, callback: Function) {
     if (!topics[topic]) topics[topic] = [];
+    if (topics[topic].includes(callback)) throw new Error("Err");
     topics[topic].push(callback);
     return () => {
       topics[topic] = topics[topic].filter((cb) => cb !== callback);
