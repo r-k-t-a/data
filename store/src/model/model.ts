@@ -13,6 +13,11 @@ type ModelFactory = <S extends any, A extends ModelCallbacksMap<S>>(
   props: Model<S, A>
 ) => Readonly<Model<S, A>>;
 
+/**
+ * ```js
+ * const store = makeModel({ ...modelData });
+ * ```
+ */
 export const makeModel: ModelFactory = <S, A extends ModelCallbacksMap<S>>(
   model: Model<S, A>
 ): Model<S, A> => model;

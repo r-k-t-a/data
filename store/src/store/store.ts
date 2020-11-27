@@ -1,24 +1,27 @@
 import { Dispatch } from "../dispatch";
 import { applyMiddleware, Middleware } from "../middleware";
 import { makeMediator, Mediator } from "../mediator";
+import { Model, ModelCallbacksMap } from "../model";
+import { proxy, ProxiedModel } from "../proxy";
 
 export type StoreState = Record<string, any>;
 
-export type Store = Readonly<{
+export type AddModel = Readonly<{
   dispatch: Dispatch;
   getState(): Readonly<StoreState>;
   mediator: Mediator;
   replaceState(state: StoreState): void;
-  subscribe(callback: () => void): () => void;
 }>;
 
-type StoreFactory = (
+export type MakeStore = typeof makeStore;
+export type Store = ReturnType<MakeStore>;
+
+export const makeStore = (
   savedState?: StoreState,
   ...middleware: Middleware[]
-) => Store;
-
-export const makeStore: StoreFactory = (savedState, ...middleware) => {
+) => {
   let state = savedState || {};
+  const models: Record<string, ProxiedModel<any, ModelCallbacksMap<any>>> = {};
 
   const change = "store/@change";
   const mediator = makeMediator();
@@ -43,15 +46,30 @@ export const makeStore: StoreFactory = (savedState, ...middleware) => {
     ...middleware
   );
 
-  const store: Store = {
+  function addModel<S, A extends ModelCallbacksMap<S>>(
+    model: Model<S, A>
+  ): ProxiedModel<S, A> {
+    if (!(model.name in models)) {
+      models[model.name] = proxy(model, {
+        dispatch,
+        getState,
+        mediator,
+        replaceState,
+      });
+    }
+
+    return models[model.name] as ProxiedModel<S, A>;
+  }
+
+  const store = {
+    addModel,
     dispatch,
     getState,
-    mediator,
     replaceState,
     subscribe(callback: () => void) {
       return mediator.subscribe(change, callback);
     },
   };
 
-  return store;
+  return Object.freeze(store);
 };

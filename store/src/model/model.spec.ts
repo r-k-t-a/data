@@ -1,38 +1,36 @@
-import { makeModel } from "./model";
-import { proxy } from "../proxy";
 import { makeStore } from "../store";
 
-const numberModel = makeModel({
-  name: "number",
-  defaultState: 0,
-  actions: {
-    increment: (state) => ++state,
-    decrement: (state) => --state,
-  },
-  events: { reset: () => 0 },
-});
-
-const store = makeStore();
-const model = proxy(store, numberModel);
-
-const modelSpy = jest.fn();
-const storeSpy = jest.fn();
-
-store.subscribe(storeSpy);
-model.subscribe(modelSpy);
+function makeTestStore(state?: Record<string, any>) {
+  const modelSpy = jest.fn();
+  const storeSpy = jest.fn();
+  const store = makeStore(state);
+  const unsubsribeStore = store.subscribe(storeSpy);
+  const model = store.addModel({
+    name: "number",
+    defaultState: 0,
+    actions: {
+      increment: (state) => ++state,
+      decrement: (state) => --state,
+    },
+    events: { reset: () => 0 },
+  });
+  const unsubsribeModel = model.subscribe(modelSpy);
+  return { model, modelSpy, store, storeSpy, unsubsribeModel, unsubsribeStore };
+}
 
 describe("model", () => {
   test("default state", () => {
+    const { model } = makeTestStore();
     expect(model.getState()).toBe(0);
   });
 
   test("external state", () => {
-    const customStore = makeStore({ number: 1 });
-    const customModel = proxy(customStore, numberModel);
-    expect(customModel.getState()).toBe(1);
+    const { model } = makeTestStore({ number: 1 });
+    expect(model.getState()).toBe(1);
   });
 
   test("actions", () => {
+    const { model } = makeTestStore();
     model.increment();
     expect(model.getState()).toBe(1);
     model.decrement();
@@ -40,6 +38,7 @@ describe("model", () => {
   });
 
   test("events", () => {
+    const { model, store } = makeTestStore();
     model.increment();
     expect(model.getState()).toBe(1);
     store.dispatch({ type: "reset" });
@@ -47,51 +46,43 @@ describe("model", () => {
   });
 
   describe("lifecycle", () => {
-    beforeEach(() => {
-      store.dispatch({ type: "reset" });
-      modelSpy.mockReset();
-      storeSpy.mockReset();
-    });
-
     test("init", () => {
-      const customStore = makeStore();
-      customStore.subscribe(storeSpy);
-
-      const customModel = proxy(customStore, numberModel);
-      customModel.subscribe(modelSpy);
-
+      const { modelSpy, storeSpy } = makeTestStore();
       expect(storeSpy.mock.calls[0][0]).toStrictEqual({
         type: "number/@init",
+        initState: 0,
       });
       expect(modelSpy).not.toBeCalled();
     });
 
     test("action", () => {
+      const { model, modelSpy, storeSpy } = makeTestStore();
       model.increment();
-      expect(storeSpy.mock.calls[0][0]).toStrictEqual({
+      expect(storeSpy.mock.calls[1][0]).toStrictEqual({
         type: "number/increment",
       });
       expect(modelSpy).toBeCalledTimes(1);
     });
 
     test("known event", () => {
+      const { modelSpy, store } = makeTestStore();
       store.dispatch({ type: "reset" });
       expect(modelSpy).toBeCalledTimes(1);
     });
 
     test("unknown event", () => {
+      const { modelSpy, store } = makeTestStore();
       store.dispatch({ type: "unknown" });
       expect(modelSpy).toBeCalledTimes(0);
     });
 
     test("unsubscribe", () => {
-      const spy = jest.fn();
-      const unsubscribe = model.subscribe(spy);
+      const { modelSpy, model, unsubsribeModel } = makeTestStore();
       model.increment();
-      expect(spy).toBeCalledTimes(1);
-      unsubscribe();
+      expect(modelSpy).toBeCalledTimes(1);
+      unsubsribeModel();
       model.increment();
-      expect(spy).toBeCalledTimes(1);
+      expect(modelSpy).toBeCalledTimes(1);
     });
   });
 });

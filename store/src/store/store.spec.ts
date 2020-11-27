@@ -1,5 +1,4 @@
 import { makeModel } from "../model";
-import { proxy } from "../proxy";
 import { makeStore } from "./store";
 
 const numberModel = makeModel({
@@ -20,7 +19,7 @@ describe("store", () => {
   });
   test("dispatch", () => {
     const store = makeStore({ number: 0 });
-    proxy(store, numberModel);
+    store.addModel(numberModel);
     store.dispatch({ type: "increment" });
     expect(store.getState()).toStrictEqual({ number: 1 });
   });

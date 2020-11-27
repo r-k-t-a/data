@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect, useContext } from "react";
-import { Model, ModelCallbacksMap, proxy, ProxiedModel } from "@rkta/store";
+import { useState, useEffect, useContext } from "react";
+import { Model, ModelCallbacksMap, ProxiedModel } from "@rkta/store";
 
 import { Context } from "./Provider";
 
@@ -14,7 +14,7 @@ export const useModel = <S, A extends ModelCallbacksMap<S>>(
   const [, setState] = useState(0);
   const store = useContext(Context);
 
-  const proxiedModel = useMemo(() => proxy(store, model), [model.name]);
+  const proxiedModel = store.addModel(model);
 
   useEffect(
     () =>

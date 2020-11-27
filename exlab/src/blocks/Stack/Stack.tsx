@@ -6,8 +6,11 @@ export const Stack = (): JSX.Element => {
   return (
     <div>
       <h2>Stack state: {stack.state.join(", ")}</h2>
-      <button onClick={() => stack.push()}>Push</button>
+      <button onClick={() => stack.push({ item: (stack.state[0] || 0) + 1 })}>
+        Push
+      </button>
       <button onClick={() => stack.pop()}>Pop</button>
+      <p>Updated: {Date.now()}</p>
     </div>
   );
 };

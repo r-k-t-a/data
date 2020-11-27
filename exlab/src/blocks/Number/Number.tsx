@@ -10,6 +10,7 @@ export const Number = (): JSX.Element => {
       <button onClick={() => number.increment()}>Increment</button>
       <button onClick={() => number.square()}>Square</button>
       <button onClick={() => number.add({ value: 10 })}>Add 10</button>
+      <p>Updated: {Date.now()}</p>
     </div>
   );
 };

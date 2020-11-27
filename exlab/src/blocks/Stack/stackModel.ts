@@ -7,7 +7,7 @@ export const useStack = makeModelHook({
   defaultState,
   actions: {
     pop: (state) => state.slice(1),
-    push: (state) => [(state[0] || 0) + 1, ...state],
+    push: (state, { item }: { item: number }) => [item, ...state],
   },
   events: {
     reset: () => defaultState,
