@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@rkta/patterns/*": ["patterns/src"],
       "@rkta/store/*": ["store/src"],
       "@rkta/store-react/*": ["./store-react/src"]
     }

@@ -1,6 +1,7 @@
+import { makeMediator, Mediator } from "@rkta/patterns";
+
 import { Dispatch } from "../dispatch";
 import { applyMiddleware, Middleware } from "../middleware";
-import { makeMediator, Mediator } from "../mediator";
 import { Model, ModelCallbacksMap } from "../model";
 import { proxy, ProxiedModel } from "../proxy";
 

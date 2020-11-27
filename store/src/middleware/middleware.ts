@@ -1,5 +1,5 @@
+import { compose } from "@rkta/patterns";
 import { AnyAction } from "../action";
-import { compose } from "../compose";
 import { Dispatch } from "../dispatch";
 
 export type MiddlwareAPI = {

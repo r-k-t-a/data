@@ -1,7 +1,7 @@
 {
-  "name": "@rkta/store",
+  "name": "@rkta/patterns",
   "version": "0.0.11",
-  "description": "Minimalistic javascript data store",
+  "description": "Common programming patterns and utilities",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "https://github.com/r-k-t-a/data",
   "main": "lib/index.js",
@@ -15,9 +15,6 @@
   },
   "bugs": {
     "url": "https://github.com/r-k-t-a/data/issues"
-  },
-  "dependencies": {
-    "@rkta/patterns": "^0.0.11"
   },
   "scripts": {
     "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
