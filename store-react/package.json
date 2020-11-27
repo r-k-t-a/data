@@ -1,6 +1,6 @@
 {
   "name": "@rkta/store-react",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "react bindings for @rkta/store",
   "author": "droganov <serge@droganov.ru>",
   "homepage": "https://github.com/r-k-t-a/data",
@@ -26,7 +26,7 @@
     "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
   },
   "dependencies": {
-    "@rkta/store": "^0.0.10",
+    "@rkta/store": "^0.0.11",
     "react": "^17.0.1"
   },
   "devDependencies": {

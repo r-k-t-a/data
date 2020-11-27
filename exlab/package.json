@@ -1,11 +1,11 @@
 {
   "name": "exlab",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": true,
   "sideEffects": false,
   "dependencies": {
-    "@rkta/store": "^0.0.10",
-    "@rkta/store-react": "^0.0.10",
+    "@rkta/store": "^0.0.11",
+    "@rkta/store-react": "^0.0.11",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.0",
