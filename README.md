@@ -1,6 +1,7 @@
 # @rtka/store
 
-A redux-inspired state machine store which is designed to bypass redux performance limitations and complexity.
+A redux-inspired experimental state machine which provides a better developer experience but keeps redux middleware support and produces smarter react tree update calls.
+
 
 ## JS example
 
