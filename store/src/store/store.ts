@@ -12,6 +12,7 @@ export type AddModel = Readonly<{
   getState(): Readonly<StoreState>;
   mediator: Mediator;
   replaceState(state: StoreState): void;
+  savedState?: StoreState;
 }>;
 
 export type MakeStore = typeof makeStore;
@@ -21,7 +22,7 @@ export const makeStore = (
   savedState?: StoreState,
   ...middleware: Middleware[]
 ) => {
-  let state = savedState || {};
+  let state = {};
   const models: Record<string, ProxiedModel<any, ModelCallbacksMap<any>>> = {};
 
   const change = "store/@change";
@@ -56,6 +57,7 @@ export const makeStore = (
         getState,
         mediator,
         replaceState,
+        savedState,
       });
     }
 

@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "0.0.11",
+  "description": "> TODO: description",
+  "author": "droganov <serge@droganov.ru>",
+  "homepage": "https://github.com/r-k-t-a/data#readme",
+  "license": "ISC",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r-k-t-a/data.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "bugs": {
+    "url": "https://github.com/r-k-t-a/data/issues"
+  },
+  "dependencies": {
+    "ws": "^7.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

@@ -1,6 +1,13 @@
 {
   "lerna": "3.22.1",
-  "packages": ["demo", "patterns", "store", "store-react"],
+  "packages": [
+    "connection-ws",
+    "demo",
+    "patterns",
+    "sefver",
+    "store",
+    "store-react"
+  ],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "0.0.11"

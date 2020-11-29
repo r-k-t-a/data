@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStore } from "@rkta/store";
 import { Provider } from "@rkta/store-react";
+import { makeConnection } from "@rkta/connection-ws";
 
 import { Number } from "./blocks/Number";
 import { Stack } from "./blocks/Stack";
@@ -9,7 +10,13 @@ import "./App.css";
 
 const store = makeStore();
 
-store.subscribe(console.log);
+const connection = makeConnection("ws://localhost:8080");
+
+connection.subscribe(console.log);
+
+connection.connect();
+
+// store.subscribe(console.log);
 
 function App() {
   return (

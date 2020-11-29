@@ -3,9 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@rkta/patterns/*": ["patterns/src"],
-      "@rkta/store/*": ["store/src"],
-      "@rkta/store-react/*": ["./store-react/src"]
+      "@rkta/connection-ws/*": ["./connection-ws/src"],
+      "@rkta/patterns/*": ["./patterns/src"],
+      "@rkta/store/*": ["./store/src"],
+      "@rkta/store-react/*": ["./store-react/src"],
+      "@rkta/transport-ws/*": ["./transport-ws/src"]
     }
   }
 }

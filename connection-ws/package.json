@@ -1,0 +1,39 @@
+{
+  "name": "@rkta/connection-ws",
+  "version": "0.0.11",
+  "description": "Common programming patterns and utilities",
+  "author": "droganov <serge@droganov.ru>",
+  "homepage": "https://github.com/r-k-t-a/data",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "typings": "lib/index.d.ts",
+  "license": "MIT",
+  "sideEffects": false,
+  "dependencies": {
+    "@rkta/patterns": "^0.0.11",
+    "@rkta/store": "^0.0.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:r-k-t-a/data.git"
+  },
+  "bugs": {
+    "url": "https://github.com/r-k-t-a/data/issues"
+  },
+  "scripts": {
+    "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
+    "build": "yarn run build:commonjs && yarn run build:esm",
+    "build:commonjs": "tsc -p tsconfig.build.json",
+    "build:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
+    "start": "tsc -p tsconfig.build.json -w",
+    "test": "jest",
+    "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "e571e772af04519d5389b221254b9b8cd5263f5f",
+  "devDependencies": {
+    "ts-jest": "^26.4.4"
+  }
+}

@@ -17,7 +17,7 @@ export type ProxiedModel<S, A extends ModelCallbacksMap<S>> = {
 
 export const proxy = <S, A extends ModelCallbacksMap<S>>(
   { actions = {} as A, defaultState, events = {}, name }: Model<S, A>,
-  { dispatch, getState, mediator, replaceState }: AddModel
+  { dispatch, getState, mediator, replaceState, savedState }: AddModel
 ): ProxiedModel<S, A> => {
   const getModelState = (storeState: StoreState): Readonly<S> =>
     Object.freeze(storeState[name]);
@@ -27,7 +27,7 @@ export const proxy = <S, A extends ModelCallbacksMap<S>>(
       [name]: nextState,
     });
   };
-  const getLocalType = (topic: string) => `${name}/${topic}`;
+  const getLocalType = (topic: string) => `${topic}/${name}`;
   const initType = getLocalType("@init");
   const updateType = getLocalType("@update");
 
@@ -57,14 +57,17 @@ export const proxy = <S, A extends ModelCallbacksMap<S>>(
     key.split(",").forEach((topic) => {
       const type = topic.trim();
       mediator.subscribe(type, (storeState: StoreState, ...args: any[]) => {
-        runCallback(callback, getState(), type, ...args);
+        runCallback(callback, storeState, type, ...args);
       });
     });
   });
 
   dispatch({
     type: initType,
-    initState: name in getState() ? getModelState(getState()) : defaultState,
+    initState:
+      savedState && name in savedState
+        ? getModelState(savedState)
+        : defaultState,
   });
 
   return {

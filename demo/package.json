@@ -4,6 +4,7 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
+    "@rkta/connection-ws": "^0.0.11",
     "@rkta/store": "^0.0.11",
     "@rkta/store-react": "^0.0.11",
     "react": "^17.0.1",
