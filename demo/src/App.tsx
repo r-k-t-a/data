@@ -10,10 +10,10 @@ import "./App.css";
 
 const store = makeStore();
 
-const connection = makeConnection("ws://localhost:8080");
+const connectWebsocket = () => new WebSocket("ws://localhost:8080");
+const connection = makeConnection(connectWebsocket);
 
 connection.subscribe(console.log);
-
 connection.connect();
 
 // store.subscribe(console.log);

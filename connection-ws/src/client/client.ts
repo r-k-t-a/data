@@ -1,4 +1,4 @@
-import { makeMediator, makeQueue } from "@rkta/patterns";
+import { makeMediator, makeQueue, Unsubscribe } from "@rkta/patterns";
 import { AnyAction } from "@rkta/store";
 
 export const CONNECTION = "@connection";
@@ -48,10 +48,15 @@ type Message = {
   meta: Meta;
 };
 
-export function makeConnection(
-  url: string,
-  protocols?: string | string[] | undefined
-) {
+type Connection = {
+  connect(): void;
+  subscribe(callback: (event: string, message: AnyAction) => void): Unsubscribe;
+  publish(action: AnyAction, meta: Meta): void;
+};
+
+type MakeConnection = (connectWebsocket: () => WebSocket) => Connection;
+
+export const makeConnection: MakeConnection = (connectWebsocket) => {
   let connection: WebSocket | null = null;
   const messageQueue = makeQueue<Message>();
   const mediator = makeMediator();
@@ -86,7 +91,7 @@ export function makeConnection(
   }
   function connect() {
     mediator.publish(CONNECTION, CONNECTION_CONNECTING);
-    connection = new WebSocket(url, protocols);
+    connection = connectWebsocket();
     connection.addEventListener("close", onClose);
     connection.addEventListener("error", onError);
     connection.addEventListener("message", onMessage);
@@ -100,14 +105,15 @@ export function makeConnection(
       messageQueue.remove(message);
     }
   }
+
   return {
     connect,
-    subscribe(callback: (event: string, message: AnyAction) => void) {
+    subscribe(callback) {
       return mediator.subscribe(CONNECTION, callback);
     },
-    publish(action: AnyAction, meta: Meta) {
+    publish(action, meta) {
       const message: Message = { action, meta };
       send(message);
     },
   };
-}
+};

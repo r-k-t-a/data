@@ -1,30 +1,27 @@
-export type MediatorFactory = typeof makeMediator;
-export type Mediator = ReturnType<MediatorFactory>;
-
 type Topics = Record<string, Function[]>;
 
-export const makeMediator = () => {
+export type Unsubscribe = () => void;
+
+export type Mediator = {
+  publish(topic: string, ...args: any[]): void;
+  subscribe(topic: string, callback: Function): Unsubscribe;
+};
+export type MediatorFactory = () => Mediator;
+
+export const makeMediator: MediatorFactory = () => {
   const topics: Topics = {};
-  function mount<O>(
-    obj: O
-  ): O & { publish: typeof publish; subscribe: typeof subscribe } {
-    return Object.assign(obj, { publish, subscribe });
-  }
-  function publish(topic: string, ...args: any[]) {
-    const subscribers = topics[topic] || [];
-    subscribers.forEach((emit) => emit(...args));
-  }
-  function subscribe(topic: string, callback: Function) {
-    if (!topics[topic]) topics[topic] = [];
-    if (topics[topic].includes(callback)) throw new Error("Err");
-    topics[topic].push(callback);
-    return () => {
-      topics[topic] = topics[topic].filter((cb) => cb !== callback);
-    };
-  }
   return {
-    mount,
-    publish,
-    subscribe,
+    publish(topic, ...args) {
+      const subscribers = topics[topic] || [];
+      subscribers.forEach((emit) => emit(...args));
+    },
+    subscribe(topic, callback) {
+      if (!topics[topic]) topics[topic] = [];
+      if (topics[topic].includes(callback)) throw new Error("Err");
+      topics[topic].push(callback);
+      return () => {
+        topics[topic] = topics[topic].filter((cb) => cb !== callback);
+      };
+    },
   };
 };
