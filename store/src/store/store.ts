@@ -1,4 +1,5 @@
 import { makeMediator, Mediator } from "@rkta/patterns";
+import { AnyAction } from "../action";
 
 import { Dispatch } from "../dispatch";
 import { applyMiddleware, Middleware } from "../middleware";
@@ -41,7 +42,7 @@ export const makeStore = (
       getState,
       dispatch(action, ...extraArgs) {
         mediator.publish(action.type, getState(), action, ...extraArgs);
-        mediator.publish(change, action, ...extraArgs);
+        mediator.publish(change, getState(), action, ...extraArgs);
         return action;
       },
     },
@@ -69,7 +70,13 @@ export const makeStore = (
     dispatch,
     getState,
     replaceState,
-    subscribe(callback: () => void) {
+    subscribe(
+      callback: (
+        state: Readonly<StoreState>,
+        action: AnyAction,
+        ...extra: any[]
+      ) => void
+    ) {
       return mediator.subscribe(change, callback);
     },
   };

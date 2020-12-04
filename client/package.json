@@ -1,0 +1,34 @@
+{
+  "name": "@rkta/client",
+  "version": "0.0.11",
+  "description": "> TODO: description",
+  "author": "droganov <serge@droganov.ru>",
+  "homepage": "https://github.com/r-k-t-a/data#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r-k-t-a/data.git"
+  },
+  "dependencies": {
+    "@rkta/connection": "^0.0.11",
+    "@rkta/store": "^0.0.11"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prebuild": "cp package.json lib/package.json; cp ../esm.json lib/esm/package.json; exit 0",
+    "build": "yarn run build:commonjs && yarn run build:esm",
+    "build:commonjs": "tsc -p tsconfig.build.json",
+    "build:esm": "tsc -m esnext -p tsconfig.build.json --outDir lib/esm",
+    "start": "tsc -p tsconfig.build.json -w",
+    "test": "jest",
+    "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly"
+  },
+  "bugs": {
+    "url": "https://github.com/r-k-t-a/data/issues"
+  }
+}
