@@ -53,6 +53,7 @@ export const proxy = <S, A extends ModelCallbacksMap<S>>(
     [initType]: initCallback,
   };
 
+  // TODO: clabbacks chaining, 1 event can run a serie of callbacks
   Object.entries({ ...defaultEvents, ...events }).forEach(([key, callback]) => {
     key.split(",").forEach((topic) => {
       const type = topic.trim();

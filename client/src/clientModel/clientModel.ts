@@ -7,6 +7,7 @@ import {
 } from "@rkta/connection";
 
 type State = {
+  connectedAt: number;
   connectionState:
     | typeof CONNECTION_DISCONNECTED
     | typeof CONNECTION_ERROR
@@ -15,6 +16,7 @@ type State = {
 };
 
 const defaultState: State = {
+  connectedAt: 0,
   connectionState: CONNECTION_DISCONNECTED,
 };
 
@@ -22,6 +24,9 @@ export const clientModel = makeModel({
   name: "@client",
   defaultState,
   events: {
+    [CONNECTION_OPEN]: (state) => {
+      return { ...state, connectedAt: Date.now() };
+    },
     [`${CONNECTION_DISCONNECTED}, ${CONNECTION_ERROR}, ${CONNECTION_OPEN}, ${CONNECTION_CONNECTING}`]: (
       state,
       { type }
