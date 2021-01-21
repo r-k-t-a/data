@@ -1,40 +1,165 @@
 import { nanoid } from "nanoid";
+import { makePubSub } from "@rkta/patterns";
 
-import { Connection, CONNECTION_DISCONNECTED, Meta } from "../connection";
-import { ConnectionClose, makePubSub } from "../pubSub";
+import {
+  Connection,
+  ConnectionClose,
+  ConnectionConnecting,
+  ConnectionOpen,
+  CONNECTION_DISCONNECTED,
+  CONNECTION_OPEN,
+  CONNECTION_CONNECTING,
+  Meta,
+} from "../Connection";
 
-export type ConnectionFactory = () => Connection;
+type Options = {
+  ls?: Storage;
+};
+
+export type CrossstabConnectionFactory = (options?: Options) => Connection;
+
+export const SET_LEADING_CROSSTAB_CONNECTION =
+  "@client/setLeadingCrosstabConnectionId";
+
+export type SetLeadingCrosstabConnectionId = {
+  type: typeof SET_LEADING_CROSSTAB_CONNECTION;
+  connectionId: string;
+};
 
 const chanelId = "@rkta/crosstab";
+const candidateKey = "@rkta/crosstab/candidate";
 
-export const makeCrosstabConnection: ConnectionFactory = () => {
+export const crosstabConnectionType = "crosstab";
+
+const IS_THERE_A_LEADER = "IS_THERE_A_LEADER";
+const LEADER_EXISTS = "LEADER_EXISTS";
+
+export const makeCrosstabConnection: CrossstabConnectionFactory = (options) => {
+  const { ls = localStorage } = options || {};
   const pubSub = makePubSub();
   const connectionId = nanoid();
 
+  let isLeader = true;
+
   window.addEventListener("storage", ({ key, newValue }) => {
     if (key === chanelId && newValue) {
-      const { action, meta, args } = JSON.parse(newValue);
-      pubSub.dispatch(action, meta, ...args);
+      const command = JSON.parse(newValue);
+
+      switch (command) {
+        case IS_THERE_A_LEADER: {
+          if (isLeader) lsSend(LEADER_EXISTS);
+          break;
+        }
+        case LEADER_EXISTS: {
+          isLeader = false;
+          break;
+        }
+
+        default:
+          const { action, meta } = command;
+          pubSub.dispatch(action, meta);
+      }
+      // if (
+      //   action.type === CONNECTION_OPEN &&
+      //   action.connectionType === connectionType
+      // ) {
+      // }
+      // ls.removeItem(chanelId);
     }
   });
 
-  const dispatch: Connection["dispatch"] = (action, meta, ...args) => {
-    const message = JSON.stringify({ action, meta, args });
-    localStorage.setItem(chanelId, JSON.stringify(message));
+  function lsSend(message: any) {
+    const json = JSON.stringify(message);
+    ls.setItem(chanelId, json);
+  }
+
+  const dispatch: Connection["dispatch"] = (action, meta) => {
+    lsSend({ action, meta });
   };
 
-  return {
-    close() {
-      const action: ConnectionClose = {
+  function emitConnecting() {
+    const action: ConnectionConnecting = {
+      connectionId,
+      connectionType: crosstabConnectionType,
+      type: CONNECTION_CONNECTING,
+    };
+    const meta: Meta = {
+      actionId: nanoid(),
+      sync: "client-only",
+      ts: Date.now(),
+    };
+    pubSub.dispatch(action, meta);
+  }
+  function emitConnected() {
+    const action: ConnectionOpen = {
+      connectionId,
+      connectionType: crosstabConnectionType,
+      type: CONNECTION_OPEN,
+    };
+    const meta: Meta = {
+      actionId: nanoid(),
+      sync: "client-only",
+      ts: Date.now(),
+    };
+    pubSub.dispatch(action, meta);
+  }
+
+  function promptPingBack() {
+    lsSend(IS_THERE_A_LEADER);
+  }
+
+  function declareLeadership() {
+    if (isLeader) {
+      ls.removeItem(candidateKey);
+      lsSend(connectionId);
+      const action: SetLeadingCrosstabConnectionId = {
         connectionId,
-        type: CONNECTION_DISCONNECTED,
-        reason: "Close Window",
+        type: SET_LEADING_CROSSTAB_CONNECTION,
       };
-      const meta: Meta = { id: nanoid(), sync: "client-only", ts: Date.now() };
-      dispatch(action, meta);
-    },
+      const meta: Meta = {
+        actionId: nanoid(),
+        sync: "client-only",
+        ts: Date.now(),
+      };
+      pubSub.dispatch(action, meta);
+    }
+  }
+
+  function open() {
+    emitConnecting();
+    promptPingBack();
+
+    setTimeout(() => {
+      emitConnected();
+      declareLeadership();
+    }, 64);
+
+    // const leader = ls.getItem(leaderKey);
+    // console.log("leader: ", leader);
+    // if (!leader) lead();
+  }
+
+  function close() {
+    const action: ConnectionClose = {
+      connectionId,
+      type: CONNECTION_DISCONNECTED,
+      reason: "Close Window",
+    };
+    const meta: Meta = {
+      actionId: nanoid(),
+      sync: "client-only",
+      ts: Date.now(),
+    };
+    dispatch(action, meta);
+  }
+
+  window.onbeforeunload = close;
+
+  return {
+    close,
     connectionId,
     dispatch,
     subscribe: pubSub.subscribe,
+    open,
   };
 };

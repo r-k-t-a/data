@@ -12,6 +12,7 @@ export const makeDevToolsMiddleware = (options?: any): Middleware => ({
 }) => {
   const reduxDevtoolsExtention = window?.__REDUX_DEVTOOLS_EXTENSION__;
   const extension = reduxDevtoolsExtention?.connect(options);
+
   extension?.init({ ...getState() });
 
   return (next) => (action, ...extra: any[]) => {

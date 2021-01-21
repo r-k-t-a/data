@@ -1,7 +1,10 @@
 import React from "react";
 import { makeStore, makeDevToolsMiddleware } from "@rkta/store";
 import { Provider } from "@rkta/store-react";
-import { makeClientConnection, makeCrosstabConnection } from "@rkta/connection";
+import {
+  makeWebsocketClientConnection,
+  makeCrosstabConnection,
+} from "@rkta/connection";
 import { makeClient } from "@rkta/client";
 
 import { Number } from "./blocks/Number";
@@ -12,9 +15,10 @@ import "./App.css";
 const store = makeStore({}, makeDevToolsMiddleware());
 
 const connectWebsocket = () => new WebSocket("ws://localhost:8080");
-const connectToServer = makeClientConnection(connectWebsocket);
+const websocketConnection = makeWebsocketClientConnection(connectWebsocket);
+const crosstabConnection = makeCrosstabConnection();
 
-makeClient({ connectToServer, makeCrosstabConnection, store });
+makeClient({ websocketConnection, crosstabConnection, store });
 
 function App() {
   return (

@@ -21,9 +21,11 @@ export function applyMiddleware(
         "Other middleware would not be applied to this dispatch."
     );
   };
-  const chain = middlewares.map((middleware) =>
-    middleware({ getState: middlewareAPI.getState, dispatch })
-  );
+  const chain = middlewares
+    .filter((middleware) => typeof middleware === "function")
+    .map((middleware) =>
+      middleware({ getState: middlewareAPI.getState, dispatch })
+    );
   dispatch = compose(...chain)(middlewareAPI.dispatch);
   return dispatch;
 }

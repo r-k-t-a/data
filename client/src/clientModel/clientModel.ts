@@ -1,38 +1,46 @@
 import { makeModel } from "@rkta/store";
 import {
+  CONNECTION_STATE,
   CONNECTION_DISCONNECTED,
   CONNECTION_CONNECTING,
   CONNECTION_ERROR,
   CONNECTION_OPEN,
+  WEBSOCKET_CLIENT,
 } from "@rkta/connection";
 
 type State = {
-  connectedAt: number;
-  connectionState:
-    | typeof CONNECTION_DISCONNECTED
-    | typeof CONNECTION_ERROR
-    | typeof CONNECTION_OPEN
-    | typeof CONNECTION_CONNECTING;
+  isCrosstabLeader: boolean;
+  connectionState: CONNECTION_STATE;
 };
 
 const defaultState: State = {
-  connectedAt: 0,
+  isCrosstabLeader: false,
   connectionState: CONNECTION_DISCONNECTED,
 };
+
+type SET_IS_LEADER = { isCrosstabLeader: boolean };
+type SET_CONNECTION_STATE = { connectionType: string; type: CONNECTION_STATE };
 
 export const clientModel = makeModel({
   name: "@client",
   defaultState,
+  actions: {
+    setIsLeader: (state, { isCrosstabLeader }: SET_IS_LEADER) => ({
+      ...state,
+      isCrosstabLeader,
+    }),
+  },
   events: {
-    [CONNECTION_OPEN]: (state) => {
-      return { ...state, connectedAt: Date.now() };
-    },
     [`${CONNECTION_DISCONNECTED}, ${CONNECTION_ERROR}, ${CONNECTION_OPEN}, ${CONNECTION_CONNECTING}`]: (
       state,
-      { type }
-    ) => ({
-      ...state,
-      connectionState: type,
-    }),
+      { connectionType, type }: SET_CONNECTION_STATE
+    ) => {
+      if (connectionType === WEBSOCKET_CLIENT)
+        return {
+          ...state,
+          connectionState: type,
+        };
+      return state;
+    },
   },
 });

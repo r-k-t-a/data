@@ -1,39 +1,71 @@
 import { Store } from "@rkta/store";
 import {
-  ConnectionFactory,
-  CONNECTION_CONNECTING,
-  Meta,
+  clientSyncOptions,
+  Connection,
+  // CONNECTION_CONNECTING,
+  // CONNECTION_DISCONNECTED,
+  CONNECTION_OPEN,
+  // Meta,
+  crosstabConnectionType,
+  SET_LEADING_CROSSTAB_CONNECTION,
 } from "@rkta/connection";
-import { nanoid } from "nanoid";
 
 import { clientModel } from "./clientModel";
+import { connectionModel } from "./connectionModel";
 
 type ClientFactory = (props: {
-  connectToServer: ConnectionFactory;
-  makeCrosstabConnection: ConnectionFactory;
+  websocketConnection: Connection;
+  crosstabConnection: Connection;
   store: Store;
 }) => null;
 
 export const makeClient: ClientFactory = ({
-  connectToServer,
-  makeCrosstabConnection,
+  websocketConnection,
+  crosstabConnection,
   store,
 }) => {
-  store.addModel(clientModel);
-  // const crosstabConnection = makeCrosstabConnection();
-  // store.subscribe(serverConnection.dispatch);
+  const client = store.addModel(clientModel);
+  store.addModel(connectionModel);
+  // console.log("connection: ", connection);
+  store.subscribe((state, action, meta) => {
+    if (action.type === SET_LEADING_CROSSTAB_CONNECTION) {
+      const isCrosstabLeader =
+        action.connectionId === crosstabConnection.connectionId;
+      client.setIsLeader({
+        isCrosstabLeader,
+      });
+      if (isCrosstabLeader) {
+        websocketConnection.open();
+      } else {
+        // TODO: send oplog
+        websocketConnection.close();
+      }
+    }
+    if (
+      action.type === CONNECTION_OPEN &&
+      action.connectionType === crosstabConnectionType
+    ) {
+      console.log("CONNECTION_OPEN: ", action.connectionId);
+    }
+    if (clientSyncOptions.includes(meta?.sync)) {
+      crosstabConnection.dispatch(action, meta);
+    }
+  });
+  websocketConnection.subscribe(store.dispatch);
+  crosstabConnection.subscribe(store.dispatch);
+  crosstabConnection.open();
   // crosstabConnection.subscribe(console.log);
 
-  function connect() {
-    const action = { type: CONNECTION_CONNECTING };
-    const meta: Meta = { id: nanoid(), sync: "client-only", ts: Date.now() };
-    store.dispatch(action, meta);
-    const serverConnection = connectToServer();
-    return serverConnection.subscribe(store.dispatch);
-  }
-  connect();
-  store.subscribe((state, action, meta) => {
-    console.log("state: ", state, action, meta);
-  });
+  // function connect() {
+  //   websocketConnection.open();
+  //   websocketConnection.subscribe(({ type }) => {
+  //     if (type === CONNECTION_OPEN) {
+  //       websocketConnection.dispatch(
+  //         { type: "piu" },
+  //         { actionId: "1", ts: Date.now() }
+  //       );
+  //     }
+  //   });
+  // }
   return null;
 };
